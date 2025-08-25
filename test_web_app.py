@@ -4,6 +4,7 @@ from fastapi.staticfiles import StaticFiles
 import httpx
 import asyncio
 import json
+import os
 from typing import Dict, Any, List
 import uvicorn
 from datetime import datetime
@@ -16,7 +17,6 @@ SERVICE2_URL = os.getenv("SERVICE2_URL", "http://localhost:8001")
 SERVICE_TIMEOUT = int(os.getenv("SERVICE_TIMEOUT", "10"))
 
 # Template directory
-import os
 template_dir = os.path.join(os.path.dirname(__file__), "templates")
 
 # Mount static files (optional)
