@@ -2,6 +2,9 @@
 
 This project demonstrates two FastAPI services that communicate with each other, plus a web dashboard for testing and monitoring.
 
+The two services and web app can run either locally (all 3 on the same IP address pn different ports), or in 3 separate pods in
+K8s. When running in K8s service discovery is used to get the correct pod.
+
 ## Services Overview
 
 ### Service 1 (User Management Service) - Port 8000
@@ -38,14 +41,14 @@ pip install -r requirements.txt
 
 ## Running the Services
 
-### Option 1: Run all services with startup script (Recommended)
+### Option 1: Run all services locally with startup script (Recommended)
 
 ```bash
 cd example
 python start_services.py
 ```
 
-This will start all three services and display their URLs. Press Ctrl+C to stop all services.
+This will start all three services on localhost and display their URLs. Press Ctrl+C to stop all services.
 
 ### Option 2: Run in separate terminals
 
@@ -172,20 +175,20 @@ Once the services are running, you can access the interactive API documentation:
 ## Architecture
 
 ```
-┌─────────────────┐    HTTP Requests    ┌─────────────────┐
-│   Service 1     │◄──────────────────►│   Service 2     │
-│ (Port 8000)     │                     │ (Port 8001)     │
-│                 │                     │                 │
-│ - User CRUD     │                     │ - Data Processing│
-│ - User Storage  │                     │ - Analytics     │
-│ - Service2 Sync │                     │ - Cross-service │
-└─────────────────┘                     └─────────────────┘
+┌─────────────────┐    HTTP Requests    ┌───────────────────┐
+│   Service 1     │◄───────────────────►│   Service 2       │
+│ (Port 8000)     │                     │ (Port 8001)       │
+│                 │                     │                   │
+│ - User CRUD     │                     │ - Data Processing │
+│ - User Storage  │                     │ - Analytics       │
+│ - Service2 Sync │                     │ - Cross-service   │
+└─────────────────┘                     └───────────────────┘
          ▲                                       ▲
          │                                       │
          │ HTTP Requests                         │
          │                                       │
-    ┌─────────────────┐                         │
-    │  Test Dashboard │─────────────────────────┘
+    ┌─────────────────┐                          │
+    │  Test Dashboard │──────────────────────────┘
     │  (Port 8002)    │
     │                 │
     │ - Web Interface │
@@ -199,6 +202,7 @@ Once the services are running, you can access the interactive API documentation:
 Both services include comprehensive error handling:
 - HTTP status codes for different error scenarios
 - Graceful handling of service communication failures
+- Timeout for web service calls
 - Input validation using Pydantic models
 - Proper error messages and logging
 
@@ -206,7 +210,7 @@ Both services include comprehensive error handling:
 
 The services can be deployed using Docker and Kubernetes:
 
-### Quick Start
+### K8s Quick Start
 ```bash
 # Build Docker images
 ./build-images.sh
@@ -221,4 +225,4 @@ See [KUBERNETES.md](KUBERNETES.md) for complete deployment guide.
 ### Docker Images
 - `microservices-demo/service1:latest` - User Management Service
 - `microservices-demo/service2:latest` - Data Processing Service  
-- `microservices-demo/webapp:latest` - Test Dashboard
+- `microservices-demo/webapp:latest`   - Test Dashboard
