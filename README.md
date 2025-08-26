@@ -264,3 +264,50 @@ See [KUBERNETES.md](KUBERNETES.md) for complete deployment guide.
 - `microservices-demo/service1:latest` - User Management Service
 - `microservices-demo/service2:latest` - Data Processing Service  
 - `microservices-demo/webapp:latest`   - Test Dashboard
+
+# Running K8s in a Dev Container
+## Initial setup
+To be able to run K8s in your Dev Container you need to enable docker-in-docker and Kubernetes features.
+Add the following to your devcontainer.json:
+```
+"features": {
+		"ghcr.io/devcontainers/features/docker-in-docker:2": {
+			"enableNonRootDocker": "true",
+			"moby": "true"
+		},
+
+		"ghcr.io/devcontainers/features/kubectl-helm-minikube:1": {
+			"version": "latest",
+			"helm": "latest",
+			"minikube": "latest"
+		}
+	 }
+```
+Rebuild the container and use the provided script to validate your setup and prodide instructions on how to
+setup your K8s cluster inside the container:
+```bash
+./setup-k8s-local.sh
+```
+Follow the provided instructions. Minikube is recommended.
+
+### Note on running as root (VScode vs Cursor)
+The Minikube Docker driver does not support running as root. Cursor defaults to connecting to the dev-container
+as root. This will not work. Minikube will fail to start. 
+
+VSCode logs into the dev-container as user vscode. And thus is fully compatible. 
+
+To get things going in Cursor. Create a vscode if it does not exist (this command must me started as root):
+```bash
+grep vscode /etc/passwd || useradd -m vscode && (echo "vscode ALL=(root) NOPASSWD:ALL" > /etc/sudoers.d/vscode)
+```
+
+Switch to the new user:
+```bash
+su -l vscode
+```
+
+You can also modify your devcontainer.json to change the default user. Uncomment the following line and change the 
+user to vscode or whatever you wish:
+```
+"remoteUser": "root"
+```
