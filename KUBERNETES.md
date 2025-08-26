@@ -29,6 +29,21 @@ This guide explains how to deploy the FastAPI microservices to Kubernetes.
 - Kubernetes cluster (local or cloud)
 - kubectl configured to access your cluster
 
+### 🚀 Quick Setup for Local Development
+
+If you don't have a Kubernetes cluster set up, use the setup script:
+
+```bash
+cd example
+./setup-k8s-local.sh
+```
+
+This script will:
+- Check for Docker Desktop, Minikube, or Kind
+- Help you enable Kubernetes in Docker Desktop
+- Start a local cluster automatically
+- Provide installation instructions if needed
+
 ## 🐳 Building Docker Images
 
 ### Option 1: Build All Images at Once
@@ -49,20 +64,44 @@ docker build -f Dockerfile.service2 -t microservices-demo/service2:latest .
 docker build -f Dockerfile.webapp -t microservices-demo/webapp:latest .
 ```
 
+## 📦 Preparing Images for Kubernetes
+
+After building images, prepare them for your Kubernetes cluster:
+
+```bash
+./prepare-k8s-images.sh
+```
+
+This script will:
+- Detect your Kubernetes cluster type (Minikube, Kind, Docker Desktop)
+- Load images into the appropriate cluster
+- Handle different image loading methods for each cluster type
+
 ## 🚀 Deploying to Kubernetes
 
-### Option 1: Deploy All Services at Once
+### Option 1: Local Development (Recommended)
+```bash
+cd example
+./deploy-k8s-local.sh
+```
+
+### Option 2: Standard Deployment
 ```bash
 cd example
 ./deploy-k8s.sh
 ```
 
-### Option 2: Deploy Manually
+### Option 3: Deploy Manually
 ```bash
 # Create namespace
 kubectl apply -f k8s/namespace.yaml
 
-# Deploy services
+# Deploy services (choose local or standard)
+kubectl apply -f k8s/service1-deployment-local.yaml  # Local development
+kubectl apply -f k8s/service2-deployment-local.yaml  # Local development
+kubectl apply -f k8s/webapp-deployment-local.yaml    # Local development
+
+# OR use standard deployments
 kubectl apply -f k8s/service1-deployment.yaml
 kubectl apply -f k8s/service2-deployment.yaml
 kubectl apply -f k8s/webapp-deployment.yaml
@@ -162,7 +201,13 @@ This script will:
 
 ### Common Issues
 
-1. **Images Not Found**
+1. **Kubernetes Cluster Not Running**
+   ```bash
+   # Error: "connection refused" or "failed to download openapi"
+   ./setup-k8s-local.sh
+   ```
+
+2. **Images Not Found**
    ```bash
    # Check if images exist
    docker images | grep microservices-demo
@@ -171,7 +216,19 @@ This script will:
    ./build-images.sh
    ```
 
-2. **Pods Not Starting**
+3. **Images Not Pullable**
+   ```bash
+   # Error: "ErrImagePull" or "ImagePullBackOff"
+   ./prepare-k8s-images.sh
+   ```
+
+4. **Use Local Deployment**
+   ```bash
+   # For local development, use local deployment files
+   ./deploy-k8s-local.sh
+   ```
+
+3. **Pods Not Starting**
    ```bash
    # Check pod events
    kubectl describe pod <pod-name> -n microservices-demo
@@ -180,13 +237,19 @@ This script will:
    kubectl logs <pod-name> -n microservices-demo
    ```
 
-3. **Services Not Communicating**
+4. **Services Not Communicating**
    ```bash
    # Check service endpoints
    kubectl get endpoints -n microservices-demo
    
    # Test connectivity
    kubectl exec -it <pod-name> -n microservices-demo -- curl <service-url>
+   ```
+
+5. **Validation Errors**
+   ```bash
+   # If you get validation errors, use --validate=false
+   kubectl apply -f k8s/ --validate=false
    ```
 
 ### Scaling Services
@@ -201,13 +264,31 @@ kubectl scale deployment service2-data-processing --replicas=2 -n microservices-
 
 ## 🧹 Cleanup
 
-### Remove All Resources
+### Option 1: Interactive Cleanup
 ```bash
-kubectl delete namespace microservices-demo
+./cleanup-k8s.sh
 ```
+This script will:
+- Delete all deployments, services, and pods
+- Delete the namespace
+- Optionally clean up Docker images
+- Provide detailed feedback
 
-### Remove Docker Images
+### Option 2: Quick Cleanup
 ```bash
+./cleanup-k8s-quick.sh
+```
+This script will:
+- Quickly delete the namespace (removes all resources)
+- No user interaction required
+- Fast cleanup for automation
+
+### Option 3: Manual Cleanup
+```bash
+# Delete namespace (removes all resources)
+kubectl delete namespace microservices-demo
+
+# Remove Docker images
 docker rmi microservices-demo/service1:latest
 docker rmi microservices-demo/service2:latest
 docker rmi microservices-demo/webapp:latest

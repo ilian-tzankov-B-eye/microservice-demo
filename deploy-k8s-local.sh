@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# Kubernetes deployment script for microservices
+# Kubernetes deployment script for local development
 
 set -e
 
@@ -11,7 +11,7 @@ YELLOW='\033[1;33m'
 BLUE='\033[0;34m'
 NC='\033[0m' # No Color
 
-echo -e "${BLUE}🚀 Deploying Microservices to Kubernetes${NC}"
+echo -e "${BLUE}🚀 Deploying Microservices to Local Kubernetes${NC}"
 echo "============================================="
 
 # Check if kubectl is available
@@ -38,6 +38,13 @@ fi
 
 echo -e "${GREEN}✅ Kubernetes cluster is accessible${NC}"
 
+# Build images if they don't exist
+echo -e "\n${YELLOW}🐳 Checking Docker images...${NC}"
+if ! docker images | grep -q "microservices-demo/service1"; then
+    echo -e "${YELLOW}⚠️  Images not found. Building them...${NC}"
+    ./build-images.sh
+fi
+
 # Prepare images for Kubernetes
 echo -e "\n${YELLOW}🐳 Preparing Docker images for Kubernetes...${NC}"
 if [ -f "./prepare-k8s-images.sh" ]; then
@@ -54,27 +61,27 @@ else
     echo -e "${YELLOW}⚠️  Namespace creation failed, continuing anyway...${NC}"
 fi
 
-# Deploy Service 1
+# Deploy Service 1 (local)
 echo -e "\n${YELLOW}📦 Deploying Service 1 (User Management)...${NC}"
-if kubectl apply -f k8s/service1-deployment.yaml --validate=false; then
+if kubectl apply -f k8s/service1-deployment-local.yaml --validate=false; then
     echo -e "${GREEN}✅ Service 1 deployed${NC}"
 else
     echo -e "${RED}❌ Service 1 deployment failed${NC}"
     exit 1
 fi
 
-# Deploy Service 2
+# Deploy Service 2 (local)
 echo -e "\n${YELLOW}📦 Deploying Service 2 (Data Processing)...${NC}"
-if kubectl apply -f k8s/service2-deployment.yaml --validate=false; then
+if kubectl apply -f k8s/service2-deployment-local.yaml --validate=false; then
     echo -e "${GREEN}✅ Service 2 deployed${NC}"
 else
     echo -e "${RED}❌ Service 2 deployment failed${NC}"
     exit 1
 fi
 
-# Deploy Test Dashboard
+# Deploy Test Dashboard (local)
 echo -e "\n${YELLOW}📦 Deploying Test Dashboard...${NC}"
-if kubectl apply -f k8s/webapp-deployment.yaml --validate=false; then
+if kubectl apply -f k8s/webapp-deployment-local.yaml --validate=false; then
     echo -e "${GREEN}✅ Test Dashboard deployed${NC}"
 else
     echo -e "${RED}❌ Test Dashboard deployment failed${NC}"
@@ -99,8 +106,9 @@ echo -e "\n${BLUE}🌐 Services:${NC}"
 kubectl get svc -n microservices-demo
 
 echo -e "\n${YELLOW}🔗 Access Information:${NC}"
-echo "  • Test Dashboard: kubectl port-forward svc/test-dashboard 8082:80 -n microservices-demo"
+echo "  • Test Dashboard: kubectl port-forward svc/test-dashboard 8080:80 -n microservices-demo"
 echo "  • Service 1 API: kubectl port-forward svc/service1-user-management 8000:8000 -n microservices-demo"
 echo "  • Service 2 API: kubectl port-forward svc/service2-data-processing 8001:8001 -n microservices-demo"
 
-echo -e "\n${GREEN}🎯 Dashboard will be available at: http://localhost:8082${NC}"
+echo -e "\n${GREEN}🎯 Dashboard will be available at: http://localhost:8080${NC}"
+

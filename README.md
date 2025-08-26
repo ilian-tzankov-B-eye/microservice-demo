@@ -215,9 +215,47 @@ The services can be deployed using Docker and Kubernetes:
 # Build Docker images
 ./build-images.sh
 
-# Deploy to Kubernetes
-./deploy-k8s.sh
+# Setup local Kubernetes cluster (if needed)
+./setup-k8s-local.sh
+
+# Deploy to Kubernetes (choose one):
+./deploy-k8s.sh          # Standard deployment
+./deploy-k8s-local.sh    # Local development (recommended)
+
+# Clean up when done:
+./cleanup-k8s.sh         # Interactive cleanup
+./cleanup-k8s-quick.sh   # Quick cleanup (no prompts)
 ```
+
+### Troubleshooting Kubernetes Issues
+
+If you get errors like "connection refused" or "failed to download openapi":
+
+1. **No Kubernetes cluster running**:
+   ```bash
+   ./setup-k8s-local.sh
+   ```
+
+2. **Images not found**:
+   ```bash
+   ./prepare-k8s-images.sh
+   ```
+
+3. **Validation errors**:
+   ```bash
+   kubectl apply -f k8s/ --validate=false
+   ```
+
+4. **Use local deployment** (recommended for development):
+   ```bash
+   ./deploy-k8s-local.sh
+   ```
+
+5. **Clean up resources**:
+   ```bash
+   ./cleanup-k8s.sh         # Interactive cleanup
+   ./cleanup-k8s-quick.sh   # Quick cleanup
+   ```
 
 ### Detailed Instructions
 See [KUBERNETES.md](KUBERNETES.md) for complete deployment guide.

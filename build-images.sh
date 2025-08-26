@@ -43,3 +43,4 @@ echo "     kubectl get pods -n microservices-demo"
 echo "  3. Access the dashboard:"
 echo "     kubectl get svc -n microservices-demo"
 
+
