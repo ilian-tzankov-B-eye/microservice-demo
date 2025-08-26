@@ -69,7 +69,7 @@ check_service() {
         echo -e "${RED}❌ Service '$service_name' not found in namespace '$NAMESPACE'${NC}"
         echo -e "${YELLOW}💡 Available services:${NC}"
         kubectl get deployments -n "$NAMESPACE"
-        return 1
+        return 0  # Don't return error code to avoid script exit
     fi
     return 0
 }
@@ -87,7 +87,7 @@ get_logs() {
     
     if [ -z "$pod_name" ]; then
         echo -e "${RED}❌ No pods found for service '$service_name'${NC}"
-        return 1
+        return 0  # Don't return error code
     fi
     
     echo -e "${GREEN}✅ Found pod: $pod_name${NC}"
@@ -116,11 +116,18 @@ get_logs() {
     echo -e "${YELLOW}🔍 Executing: $cmd${NC}"
     echo ""
     
-    if eval "$cmd"; then
+    # Temporarily disable exit on error for this command
+    set +e
+    eval "$cmd"
+    local exit_code=$?
+    # Don't re-enable set -e here to avoid script exit
+    
+    if [ $exit_code -eq 0 ]; then
         echo -e "\n${GREEN}✅ Logs retrieved successfully for $service_name${NC}"
+        return 0
     else
         echo -e "\n${RED}❌ Failed to get logs for $service_name${NC}"
-        return 1
+        return 0  # Don't return error code to avoid script exit
     fi
 }
 
@@ -224,7 +231,14 @@ case $SERVICE in
         fi
         ;;
     all)
+        # Temporarily disable exit on error for the all services case
+        set +e
         get_all_logs
+        all_exit_code=$?
+        set -e
+        if [ $all_exit_code -ne 0 ]; then
+            echo -e "${YELLOW}⚠️  Some services failed to retrieve logs${NC}"
+        fi
         ;;
     *)
         echo -e "${RED}❌ Invalid service: $SERVICE${NC}"
