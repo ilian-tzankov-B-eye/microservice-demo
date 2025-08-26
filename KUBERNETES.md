@@ -252,6 +252,45 @@ kubectl scale deployment service1-user-management --replicas=3 -n microservices-
 kubectl scale deployment service2-data-processing --replicas=2 -n microservices-demo
 ```
 
+## 🔍 Monitoring and Debugging
+
+### Check Pod Status
+```bash
+kubectl get pods -n microservices-demo
+```
+
+### Check Service Status
+```bash
+kubectl get svc -n microservices-demo
+```
+
+### View Logs
+```bash
+# Using the logs script (recommended)
+./k8s-logs.sh                    # View logs from all services
+./k8s-logs.sh service1           # View logs from service1 only
+./k8s-logs.sh -f service2        # Follow logs from service2 in real-time
+./k8s-logs.sh -t 50 webapp       # Show last 50 lines from webapp
+./k8s-logs.sh -s 1h service1     # Show service1 logs from last hour
+
+# Manual kubectl commands
+kubectl logs <pod-name> -n microservices-demo
+kubectl logs -f <pod-name> -n microservices-demo
+kubectl logs --tail=100 <pod-name> -n microservices-demo
+```
+
+### Debug Pod Issues
+```bash
+# Describe pod for detailed information
+kubectl describe pod <pod-name> -n microservices-demo
+
+# Execute commands in a pod
+kubectl exec -it <pod-name> -n microservices-demo -- /bin/bash
+
+# Check pod events
+kubectl get events -n microservices-demo --sort-by='.lastTimestamp'
+```
+
 ## 🧹 Cleanup
 
 ### Option 1: Interactive Cleanup

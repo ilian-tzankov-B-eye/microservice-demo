@@ -225,6 +225,10 @@ The services can be deployed using Docker and Kubernetes:
 # Clean up when done:
 ./cleanup-k8s.sh         # Interactive cleanup
 ./cleanup-k8s-quick.sh   # Quick cleanup (no prompts)
+
+# Monitor logs:
+./k8s-logs.sh            # View logs from all services
+./k8s-logs.sh service1   # View logs from specific service
 ```
 
 ### Troubleshooting Kubernetes Issues
@@ -255,6 +259,13 @@ If you get errors like "connection refused" or "failed to download openapi":
    ```bash
    ./cleanup-k8s.sh         # Interactive cleanup
    ./cleanup-k8s-quick.sh   # Quick cleanup
+   ```
+
+6. **Monitor logs**:
+   ```bash
+   ./k8s-logs.sh            # View logs from all services
+   ./k8s-logs.sh service1   # View logs from specific service
+   ./k8s-logs.sh -f webapp  # Follow logs in real-time
    ```
 
 ### Detailed Instructions
