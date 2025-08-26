@@ -29,6 +29,8 @@ This guide explains how to deploy the FastAPI microservices to Kubernetes.
 - Kubernetes cluster (local or cloud)
 - kubectl configured to access your cluster
 
+See README.md for information on how to set this up.
+
 ### 🚀 Quick Setup for Local Development
 
 If you don't have a Kubernetes cluster set up, use the setup script:
@@ -79,19 +81,13 @@ This script will:
 
 ## 🚀 Deploying to Kubernetes
 
-### Option 1: Local Development (Recommended)
-```bash
-cd example
-./deploy-k8s-local.sh
-```
-
-### Option 2: Standard Deployment
+### Option 1: Standard Deployment
 ```bash
 cd example
 ./deploy-k8s.sh
 ```
 
-### Option 3: Deploy Manually
+### Option 2: Deploy Manually
 ```bash
 # Create namespace
 kubectl apply -f k8s/namespace.yaml
@@ -222,13 +218,7 @@ This script will:
    ./prepare-k8s-images.sh
    ```
 
-4. **Use Local Deployment**
-   ```bash
-   # For local development, use local deployment files
-   ./deploy-k8s-local.sh
-   ```
-
-3. **Pods Not Starting**
+4. **Pods Not Starting**
    ```bash
    # Check pod events
    kubectl describe pod <pod-name> -n microservices-demo
@@ -237,7 +227,7 @@ This script will:
    kubectl logs <pod-name> -n microservices-demo
    ```
 
-4. **Services Not Communicating**
+5. **Services Not Communicating**
    ```bash
    # Check service endpoints
    kubectl get endpoints -n microservices-demo
@@ -246,7 +236,7 @@ This script will:
    kubectl exec -it <pod-name> -n microservices-demo -- curl <service-url>
    ```
 
-5. **Validation Errors**
+6. **Validation Errors**
    ```bash
    # If you get validation errors, use --validate=false
    kubectl apply -f k8s/ --validate=false
