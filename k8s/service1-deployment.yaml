@@ -18,7 +18,7 @@ spec:
       containers:
       - name: service1
         image: microservices-demo/service1:latest
-        imagePullPolicy: IfNotPresent
+        imagePullPolicy: Never  # Use local images only
         ports:
         - containerPort: 8000
           name: http
@@ -63,3 +63,4 @@ spec:
     name: http
   selector:
     app: service1-user-management
+

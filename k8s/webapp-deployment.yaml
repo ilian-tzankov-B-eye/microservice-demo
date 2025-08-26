@@ -18,7 +18,7 @@ spec:
       containers:
       - name: webapp
         image: microservices-demo/webapp:latest
-        imagePullPolicy: IfNotPresent
+        imagePullPolicy: Never  # Use local images only
         ports:
         - containerPort: 8002
           name: http
@@ -65,3 +65,4 @@ spec:
     name: http
   selector:
     app: test-dashboard
+

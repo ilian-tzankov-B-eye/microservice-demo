@@ -98,9 +98,11 @@ kubectl get pods -n microservices-demo
 echo -e "\n${BLUE}🌐 Services:${NC}"
 kubectl get svc -n microservices-demo
 
-echo -e "\n${YELLOW}🔗 Access Information:${NC}"
-echo "  • Test Dashboard: kubectl port-forward svc/test-dashboard 8082:80 -n microservices-demo"
+echo -e "\n${YELLOW}🔗 Access Information${NC}"
+echo -e "\n${BLUE}📊 Run one of the following commands to access the dashboard or one of the services:${NC}"
+echo -e "\n${BLUE}📊 Exit the proxy with Ctrl+C:${NC}"
+echo "  • Test Dashboard: kubectl port-forward svc/test-dashboard 8080:80 -n microservices-demo"
 echo "  • Service 1 API: kubectl port-forward svc/service1-user-management 8000:8000 -n microservices-demo"
 echo "  • Service 2 API: kubectl port-forward svc/service2-data-processing 8001:8001 -n microservices-demo"
 
-echo -e "\n${GREEN}🎯 Dashboard will be available at: http://localhost:8082${NC}"
+echo -e "\n${GREEN}🎯 Dashboard will be available at: http://localhost:8080${NC}"
