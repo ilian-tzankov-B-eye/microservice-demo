@@ -14,20 +14,11 @@ NC='\033[0m' # No Color
 echo -e "${BLUE}🐳 Building Microservices Docker Images${NC}"
 echo "=========================================="
 
-# Build Service 1 (User Management)
-echo -e "\n${YELLOW}📦 Building Service 1 (User Management)...${NC}"
-docker build -f Dockerfile.service1 -t microservices-demo/service1:latest .
-echo -e "${GREEN}✅ Service 1 image built successfully${NC}"
-
-# Build Service 2 (Data Processing)
-echo -e "\n${YELLOW}📦 Building Service 2 (Data Processing)...${NC}"
-docker build -f Dockerfile.service2 -t microservices-demo/service2:latest .
-echo -e "${GREEN}✅ Service 2 image built successfully${NC}"
-
-# Build Web Dashboard
-echo -e "\n${YELLOW}📦 Building Test Dashboard...${NC}"
-docker build -f Dockerfile.webapp -t microservices-demo/webapp:latest .
-echo -e "${GREEN}✅ Test Dashboard image built successfully${NC}"
+for service in service1 service2 webapp; do
+    echo -e "\n${YELLOW}📦 Building ${service}...${NC}"
+    docker build -f Dockerfile.${service} -t microservices-demo/${service}:latest .
+    echo -e "${GREEN}✅ ${service} image built successfully${NC}"
+done
 
 echo -e "\n${GREEN}🎉 All images built successfully!${NC}"
 echo -e "\n${BLUE}📋 Built Images:${NC}"
