@@ -29,7 +29,7 @@ This guide explains how to deploy the FastAPI microservices to Kubernetes.
 - Kubernetes cluster (local or cloud)
 - kubectl configured to access your cluster
 
-See README.md for information on how to set this up.
+See [README](README.md) for information on how to set this up.
 
 ### 🚀 Quick Setup for Local Development
 

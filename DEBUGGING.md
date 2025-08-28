@@ -310,7 +310,7 @@ To debug multiple instances:
 ## Performance Impact
 
 - Debug images are larger due to debugpy
-- Port forwarding adds minimal overhead
+cd - Port forwarding adds minimal overhead
 - Debugging itself may impact performance
 
 ## Best Practices
